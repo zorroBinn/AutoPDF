@@ -8,10 +8,10 @@ namespace AutoPDF
 {
     class PDFCreator
     {
+        //Создаёт PDF-файл из страниц-изображений и сохраняет по указанному пути
         public void CreatePDF(List<Bitmap> images, string outputPath)
         {
             PdfDocument document = new PdfDocument();
-
             foreach (var image in images)
             {
                 PdfPage page = document.AddPage();
@@ -31,7 +31,6 @@ namespace AutoPDF
                     }
                 }
             }
-
             document.Save(outputPath);
         }
     }

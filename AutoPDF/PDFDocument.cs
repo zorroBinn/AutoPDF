@@ -10,6 +10,7 @@ namespace AutoPDF
         public int PageCount { get; set; } //Количество страниц в документе
         public List<(double Width, double Height)> PageSizes { get; set; } //Исходные размеры каждой страницы
 
+        //Конструктор
         public PDFDocument(string path)
         {
             Path = path;
