@@ -5,7 +5,8 @@ namespace AutoPDF
 {
     class ConfigManager
     {
-        private readonly Dictionary<string, string> configValues;
+        private readonly Dictionary<string, string> configValues; //Словарь с ключами и значениями
+        
         //Конструктор с параметром
         public ConfigManager(string filePath)
         {
@@ -13,17 +14,17 @@ namespace AutoPDF
             LoadConfig(filePath);
         }
 
+        //Построчно читает файл конфигурации и создаёт словарь ключей и значений
         private void LoadConfig(string filePath)
         {
-            // Читаем файл построчно
             var lines = File.ReadAllLines(filePath);
             foreach (var line in lines)
             {
-                // Пропускаем комментарии и пустые строки
+                //Пропускаем комментарии и пустые строки
                 if (string.IsNullOrWhiteSpace(line) || line.Trim().StartsWith(";"))
                     continue;
 
-                // Разделяем строку на ключ и значение
+                //Разделяем строку на ключ и значение
                 var parts = line.Split('=');
                 if (parts.Length == 2)
                 {
