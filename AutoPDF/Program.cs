@@ -34,8 +34,13 @@ namespace AutoPDF
                     WriteError("Неправильная конфигурация. Проверьте AutoPDF_config.config");
                     return;
                 }
-
+                
                 string fileName = Path.GetFileNameWithoutExtension(pdfPath);
+                if (!File.Exists(pdfPath))
+                {
+                    WriteError($"Файл {fileName} не найден.");
+                    return;
+                }
                 string resultFilePath = "AutoPDF_result.txt";
                 Printer printer = new Printer(printerWidth, printerHeight);
                 PDFDocument document = new PDFDocument(pdfPath);
@@ -51,7 +56,7 @@ namespace AutoPDF
 
                 using (StreamWriter writer = new StreamWriter(resultFilePath))
                 {
-                    writer.WriteLine($"Результат работы AutoPDF с файлом {fileName}.pdf");
+                    writer.WriteLine($"Результат работы AutoPDF с файлом {fileName}");
                     if (analyzer.CanPrint(document, printer))
                     {
                         double fillPercentage = analyzer.CalculateFillPercentage(optimizedImages);
