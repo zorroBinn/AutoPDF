@@ -1,4 +1,5 @@
 ﻿using PdfiumViewer;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -14,7 +15,9 @@ namespace AutoPDF
             {
                 using (var pdfDocument = PdfiumViewer.PdfDocument.Load(document.Path))
                 {
-                    using (var image = RenderPage(pdfDocument, i, targetDPI))
+                    int dpiX = targetDPI == 0 ? GetOriginalDPI(pdfDocument, i, "X") : targetDPI;
+                    int dpiY = targetDPI == 0 ? GetOriginalDPI(pdfDocument, i, "Y") : targetDPI;
+                    using (var image = RenderPage(pdfDocument, i, dpiX, dpiY))
                     {
                         var croppedImage = CropImage(image);
                         if (croppedImage != null)
@@ -28,10 +31,30 @@ namespace AutoPDF
             return optimizedImages;
         }
 
-        //Рендерит Bitmap по странице документа
-        private Bitmap RenderPage(PdfiumViewer.PdfDocument pdfDocument, int pageIndex, int targetDPI)
+        //Получает исходный DPI страницы
+        private int GetOriginalDPI(PdfiumViewer.PdfDocument pdfDocument, int pageIndex, string XorY)
         {
-            var pageImage = pdfDocument.Render(pageIndex, targetDPI, targetDPI, PdfRenderFlags.CorrectFromDpi);
+            using (var page = pdfDocument.Render(pageIndex, 72, 72, PdfRenderFlags.CorrectFromDpi))
+            {
+                if (XorY == "X")
+                {
+                    var widthInPixels = page.Width;
+                    double dpiX = widthInPixels / (pdfDocument.PageSizes[pageIndex].Width / 72.0);
+                    return (int)Math.Round(dpiX);
+                }
+                else
+                {
+                    var heightInPixels = page.Height;
+                    double dpiY = heightInPixels / (pdfDocument.PageSizes[pageIndex].Height / 72.0);
+                    return (int)Math.Round(dpiY);
+                }
+            }
+        }
+
+        //Рендерит Bitmap по странице документа
+        private Bitmap RenderPage(PdfiumViewer.PdfDocument pdfDocument, int pageIndex, int dpiX, int dpiY)
+        {
+            var pageImage = pdfDocument.Render(pageIndex, dpiX, dpiY, PdfRenderFlags.CorrectFromDpi);
             //Конвертирует Image в Bitmap
             Bitmap bitmap = new Bitmap(pageImage.Width, pageImage.Height);
             using (Graphics g = Graphics.FromImage(bitmap))
@@ -45,7 +68,7 @@ namespace AutoPDF
         private Bitmap CropImage(Bitmap source)
         {
             int top = 0, bottom = source.Height - 1, left = 0, right = source.Width - 1;
-            bool found = false;  //флаг непустой страницы
+            bool found = false;  //Флаг непустой страницы
             //Поиск верхней не белой точки
             for (int y = 0; y < source.Height; y++)
             {

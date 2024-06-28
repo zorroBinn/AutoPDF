@@ -10,7 +10,7 @@ namespace AutoPDF
         static void Main(string[] args)
         {
             string configFilePath = "AutoPDF_config.ini";
-            // Проверяем, существует ли файл конфигурации
+            //Проверяем, существует ли файл конфигурации
             if (!File.Exists(configFilePath))
             {
                 WriteError("Файл конфигурации не найден.");
@@ -29,7 +29,7 @@ namespace AutoPDF
                     !configManager.TryGetValue("filePath", out pdfPath) ||
                     !configManager.TryGetValue("optimizedPath", out optimizedPdfPath) ||
                     !configManager.TryGetValue("targetDPI", out targetDPIStr) ||
-                    !int.TryParse(targetDPIStr, out int targetDPI) || targetDPI <= 0)
+                    !int.TryParse(targetDPIStr, out int targetDPI) || targetDPI < 0)
                 {
                     WriteError("Неправильная конфигурация. Проверьте AutoPDF_config.config");
                     return;

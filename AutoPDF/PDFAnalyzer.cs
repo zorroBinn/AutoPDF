@@ -10,7 +10,7 @@ namespace AutoPDF
         {
             foreach (var pageSize in document.PageSizes)
             {
-                if (pageSize.Width > printer.WidthPaperSheet || pageSize.Height > printer.HeightPaperSheet)
+                if (pageSize.Width * 25.4 / 72 > printer.WidthPaperSheet || pageSize.Height * 25.4 / 72 > printer.HeightPaperSheet)
                 {
                     return false;
                 }
