@@ -15,6 +15,7 @@ namespace AutoPDF
                     return false;
                 }
             }
+            
             return true;
         }
 
@@ -23,6 +24,7 @@ namespace AutoPDF
         {
             double totalPixels = 0; //Общее количество пикселей
             double coloredPixels = 0; //Количество не белых пикселей
+            
             foreach (var image in optimizedImages)
             {
                 totalPixels += image.Width * image.Height;
@@ -37,6 +39,7 @@ namespace AutoPDF
                     }
                 }
             }
+            
             return (coloredPixels / totalPixels) * 100;
         }
     }

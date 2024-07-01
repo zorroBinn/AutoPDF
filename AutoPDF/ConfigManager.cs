@@ -18,6 +18,7 @@ namespace AutoPDF
         private void LoadConfig(string filePath)
         {
             var lines = File.ReadAllLines(filePath);
+            
             foreach (var line in lines)
             {
                 //Пропускаем комментарии и пустые строки
@@ -26,6 +27,7 @@ namespace AutoPDF
 
                 //Разделяем строку на ключ и значение
                 var parts = line.Split('=');
+                
                 if (parts.Length == 2)
                 {
                     var key = parts[0].Trim();

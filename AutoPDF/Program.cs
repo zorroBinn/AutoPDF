@@ -21,6 +21,7 @@ namespace AutoPDF
             {
                 ConfigManager configManager = new ConfigManager(configFilePath);
                 string printerWidthStr = null, printerHeightStr = null, pdfPath = null, optimizedPdfPath = null, targetDPIStr = null;
+                
                 //Проверяем и получаем значения конфигурации. Если конфигурация некорректна, записываем ошибку в файл и завершаем выполнение
                 if (!configManager.TryGetValue("printerWidth", out printerWidthStr) ||
                     !double.TryParse(printerWidthStr, out double printerWidth) || printerWidth <= 0 ||
@@ -41,6 +42,7 @@ namespace AutoPDF
                     WriteError($"Файл {fileName} не найден.");
                     return;
                 }
+                
                 string resultFilePath = "AutoPDF_result.txt";
                 Printer printer = new Printer(printerWidth, printerHeight);
                 PDFDocument document = new PDFDocument(pdfPath);
@@ -48,6 +50,7 @@ namespace AutoPDF
                 PDFAnalyzer analyzer = new PDFAnalyzer();
                 List<Bitmap> optimizedImages = optimizer.Optimize(document, targetDPI);
                 document.PageSizes = new List<(double Width, double Height)>();
+                
                 foreach (var image in optimizedImages)
                 {
                     document.PageSizes.Add((image.Width, image.Height));
@@ -66,6 +69,15 @@ namespace AutoPDF
                         creator.CreatePDF(optimizedImages, optimizedPdfPath);
 
                         writer.WriteLine($"Обработанный PDF-файл сохранён в {optimizedPdfPath}");
+                        
+                        //Печать обработанного PDF-файла, если количество страниц - 1
+                        if (optimizedImages.Count == 1)
+                        {
+                            PDFPrinter pdfPrinter = new PDFPrinter();
+                            double pageHeight = optimizedImages[0].Height * 25.4 / 72;
+                            pdfPrinter.PrintPDF(optimizedPdfPath, printer.WidthPaperSheet, pageHeight);
+                            writer.WriteLine($"Обработанный PDF-файл {optimizedPdfPath} отправлен на печать");
+                        }
                     }
                     else
                     {

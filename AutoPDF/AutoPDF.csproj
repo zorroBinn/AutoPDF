@@ -127,6 +127,7 @@
     <Compile Include="PDFCreator.cs" />
     <Compile Include="PDFDocument.cs" />
     <Compile Include="PDFOptimizer.cs" />
+    <Compile Include="PDFPrinter.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

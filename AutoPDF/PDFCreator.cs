@@ -12,6 +12,7 @@ namespace AutoPDF
         public void CreatePDF(List<Bitmap> images, string outputPath)
         {
             PdfDocument document = new PdfDocument();
+            
             foreach (var image in images)
             {
                 PdfPage page = document.AddPage();
@@ -31,6 +32,7 @@ namespace AutoPDF
                     }
                 }
             }
+            
             document.Save(outputPath);
         }
     }

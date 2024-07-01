@@ -11,12 +11,14 @@ namespace AutoPDF
         public List<Bitmap> Optimize(PDFDocument document, int targetDPI)
         {
             var optimizedImages = new List<Bitmap>();
+            
             for (int i = 0; i < document.PageCount; i++)
             {
                 using (var pdfDocument = PdfiumViewer.PdfDocument.Load(document.Path))
                 {
                     int dpiX = targetDPI == 0 ? GetOriginalDPI(pdfDocument, i, "X") : targetDPI;
                     int dpiY = targetDPI == 0 ? GetOriginalDPI(pdfDocument, i, "Y") : targetDPI;
+                    
                     using (var image = RenderPage(pdfDocument, i, dpiX, dpiY))
                     {
                         var croppedImage = CropImage(image);
@@ -28,6 +30,7 @@ namespace AutoPDF
                     }
                 }
             }
+            
             return optimizedImages;
         }
 
@@ -55,12 +58,14 @@ namespace AutoPDF
         private Bitmap RenderPage(PdfiumViewer.PdfDocument pdfDocument, int pageIndex, int dpiX, int dpiY)
         {
             var pageImage = pdfDocument.Render(pageIndex, dpiX, dpiY, PdfRenderFlags.CorrectFromDpi);
+            
             //Конвертирует Image в Bitmap
             Bitmap bitmap = new Bitmap(pageImage.Width, pageImage.Height);
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 g.DrawImage(pageImage, 0, 0, pageImage.Width, pageImage.Height);
             }
+            
             return bitmap;
         }
 
@@ -69,6 +74,7 @@ namespace AutoPDF
         {
             int top = 0, bottom = source.Height - 1, left = 0, right = source.Width - 1;
             bool found = false;  //Флаг непустой страницы
+            
             //Поиск верхней не белой точки
             for (int y = 0; y < source.Height; y++)
             {
@@ -83,6 +89,7 @@ namespace AutoPDF
                 }
                 if (found) break;
             }
+            
             //Поиск нижней не белой точки
             found = false;
             for (int y = source.Height - 1; y >= 0; y--)
@@ -98,6 +105,7 @@ namespace AutoPDF
                 }
                 if (found) break;
             }
+            
             //Поиск левой не белой точки
             found = false;
             for (int x = 0; x < source.Width; x++)
@@ -113,6 +121,7 @@ namespace AutoPDF
                 }
                 if (found) break;
             }
+            
             //Поиск правой не белой точки
             found = false;
             for (int x = source.Width - 1; x >= 0; x--)
@@ -128,11 +137,13 @@ namespace AutoPDF
                 }
                 if (found) break;
             }
+            
             //Если страница пустая - возвращает NULL
             if (!found || top == bottom && left == right)
             {
                 return null;
             }
+            
             //Создаём Bitmap обрезанный страницы
             Rectangle cropRect = new Rectangle(left, top, right - left + 1, bottom - top + 1);
             Bitmap target = new Bitmap(cropRect.Width, cropRect.Height);
@@ -140,6 +151,7 @@ namespace AutoPDF
             {
                 g.DrawImage(source, new Rectangle(0, 0, target.Width, target.Height), cropRect, GraphicsUnit.Pixel);
             }
+            
             return target;
         }
         
@@ -150,6 +162,7 @@ namespace AutoPDF
             {
                 image.RotateFlip(RotateFlipType.Rotate90FlipNone);
             }
+
             return image;
         }
     }
