@@ -17,7 +17,11 @@ namespace AutoPDF
                 printDocument.DefaultPageSettings.PaperSize = paperSize;
                 printDocument.DefaultPageSettings.Landscape = false;
 
+                printDocument.OriginAtMargins = false;
+                printDocument.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
+
                 printDocument.PrintController = new StandardPrintController();
+
                 printDocument.Print();
             }
         }
