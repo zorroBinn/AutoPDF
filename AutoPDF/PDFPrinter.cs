@@ -16,7 +16,7 @@ namespace AutoPDF
                 PaperSize paperSize = new PaperSize("Custom", (int)(paperWidth * 100 / 25.4), (int)(paperHeight * 100 / 25.4));
                 printDocument.DefaultPageSettings.PaperSize = paperSize;
                 printDocument.DefaultPageSettings.Landscape = false;
-
+                //Отключение масштабирования
                 printDocument.OriginAtMargins = false;
                 printDocument.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
 

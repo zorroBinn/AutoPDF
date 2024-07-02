@@ -20,7 +20,7 @@ namespace AutoPDF
             try
             {
                 ConfigManager configManager = new ConfigManager(configFilePath);
-                string printerWidthStr = null, printerHeightStr = null, pdfPath = null, optimizedPdfPath = null, targetDPIStr = null;
+                string printerWidthStr = null, printerHeightStr = null, pdfPath = null, optimizedPdfPath = null, targetDPIStr = null, print = null;
                 
                 //Проверяем и получаем значения конфигурации. Если конфигурация некорректна, записываем ошибку в файл и завершаем выполнение
                 if (!configManager.TryGetValue("printerWidth", out printerWidthStr) ||
@@ -30,7 +30,8 @@ namespace AutoPDF
                     !configManager.TryGetValue("filePath", out pdfPath) ||
                     !configManager.TryGetValue("optimizedPath", out optimizedPdfPath) ||
                     !configManager.TryGetValue("targetDPI", out targetDPIStr) ||
-                    !int.TryParse(targetDPIStr, out int targetDPI) || targetDPI < 0)
+                    !int.TryParse(targetDPIStr, out int targetDPI) || targetDPI < 0 ||
+                    !configManager.TryGetValue("print", out print))
                 {
                     WriteError("Неправильная конфигурация. Проверьте AutoPDF_config.config");
                     return;
@@ -71,7 +72,7 @@ namespace AutoPDF
                         writer.WriteLine($"Обработанный PDF-файл сохранён в {optimizedPdfPath}");
                         
                         //Печать обработанного PDF-файла, если количество страниц - 1
-                        if (optimizedImages.Count == 1)
+                        if (print == "1" && optimizedImages.Count == 1)
                         {
                             PDFPrinter pdfPrinter = new PDFPrinter();
                             double pageHeight = optimizedImages[0].Height * 25.4 / 72;
