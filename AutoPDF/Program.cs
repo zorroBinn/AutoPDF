@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
 
 namespace AutoPDF
@@ -74,9 +75,10 @@ namespace AutoPDF
                         //Печать обработанного PDF-файла, если количество страниц - 1
                         if (print == "1" && optimizedImages.Count == 1)
                         {
-                            PDFPrinter pdfPrinter = new PDFPrinter();
-                            double pageHeight = optimizedImages[0].Height * 25.4 / 72;
-                            pdfPrinter.PrintPDF(optimizedPdfPath, printer.WidthPaperSheet, pageHeight);
+                            PDFPrinter pdfPrinter = new PDFPrinter(optimizedPdfPath, printerWidth);
+                            PrinterSettings printerSettings = new PrinterSettings();
+                            printerSettings.DefaultPageSettings.PaperSize = new PaperSize("Custom", (int)(printerWidth * 100 / 25.4), (int)(printerHeight * 100 / 25.4));
+                            pdfPrinter.Print(printerSettings);
                             writer.WriteLine($"Обработанный PDF-файл {optimizedPdfPath} отправлен на печать");
                         }
                     }
